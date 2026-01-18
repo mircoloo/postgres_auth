@@ -9,5 +9,5 @@ class UserOut(BaseModel):
     id: int
     email: EmailStr
 
-    class Config:
+    class ConfigDict:
         orm_mode = True
