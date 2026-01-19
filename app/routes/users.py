@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from pydantic import EmailStr
 from ..database import get_db
 from .. import models, schemas, utils
 
@@ -19,11 +20,6 @@ async def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-@router.get("/users", response_model=list[schemas.UserOut])
-def get_users(db: Session = Depends(get_db)):
-    users = db.query(models.User).all()
-    return users
-
         
 @router.get("/users/{id}", response_model=schemas.UserOut)
 def get_user(id: int, db: Session = Depends(get_db)):
@@ -31,6 +27,38 @@ def get_user(id: int, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+            detail=f"User with id {id} not found"
         )
+    
     return user        
+
+""" fix the request part 
+@router.put("/users/{id}", response_model=schemas.UserOut, status_code=status.HTTP_202_ACCEPTED)
+def update_user(id: int, request: schemas.UserCreate, db: Session = Depends(get_db)):
+    user: models.User = db.query(models.User).filter(models.User.id == id)
+    if not user.first():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id {id} not found"
+        )
+    user.update(request)
+    db.commit()
+    return 'updated'
+"""
+
+@router.delete("/users/{id}", status_code=status.HTTP_200_OK)
+def delete_user(id: int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id {id} not found"
+        )
+    db.delete(user)
+    db.commit()    
+    return {"detail": f"User with id {id} deleted"}
+
+@router.get("/users", response_model=list[schemas.UserOut])
+def get_users(db: Session = Depends(get_db)):
+    users = db.query(models.User).all()
+    return users
