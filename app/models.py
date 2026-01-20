@@ -1,12 +1,24 @@
-from sqlalchemy import Column, String, DateTime, Integer
+from datetime import date, datetime
+from typing import List
+from sqlalchemy import String, DateTime, Date, ForeignKey
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 from sqlalchemy.sql import func
 from .database import Base
-from sqlalchemy.orm import Mapped, relationship
-from pydantic import EmailStr
+
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = Column(Integer, primary_key=True, index=True)
-    email: Mapped[EmailStr] = Column(String, unique=True, nullable=False, index=True)
-    password_hash: Mapped[str] = Column(String, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    email: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    password_hash: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    items: Mapped[List["Product"]] = relationship("Product", back_populates="owner")
+
+class Product(Base):
+    __tablename__ = "products"
+    
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    product_name: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
+    expiration_date: Mapped[date] = mapped_column(Date)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    owner: Mapped["User"] = relationship("User", back_populates="items")

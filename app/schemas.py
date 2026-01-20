@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+from datetime import date
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -18,3 +19,8 @@ class UserOut(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+    
+    
+class Product(BaseModel):
+    product_name: str
+    expiration_date: Optional[date] = None
