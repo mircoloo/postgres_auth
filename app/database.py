@@ -11,6 +11,9 @@ DATABASE_URL = (
     f"{os.getenv('POSTGRES_DB')}"
 )
 
+
+DATABASE_URL = ("sqlite:///.test.db")
+
 # Create the engine by binding the database url
 engine = create_engine(DATABASE_URL)
 # Create the sessionlocal binding the engine

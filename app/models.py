@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, DateTime, Integer
 from sqlalchemy.sql import func
 from .database import Base
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped, relationship
 from pydantic import EmailStr
 class User(Base):
     __tablename__ = "users"

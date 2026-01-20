@@ -15,7 +15,7 @@ def check_credentials(user_login: schemas.UserLogin, db: Session = Depends(get_d
         )
     
     if utils.verify_password(user_login.password, user.password_hash):
-        return {'is_login_permitted': True}
+        return {'is_login_permitted': True, "user": user}
     return {'is_login_permitted': False}
     
     
