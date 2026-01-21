@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Optional, List
 from datetime import date
-
+from jose import jwt, JWTError
 
 
 class Product(BaseModel):
@@ -31,4 +31,19 @@ class ProductShow(BaseModel):
     expiration_date: Optional[date] = None
     user: User 
     model_config = ConfigDict(from_attributes=True)
+    
+
+
+
+
+# JWT Schemas
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
+    
+    
     
