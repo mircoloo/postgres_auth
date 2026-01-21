@@ -18,7 +18,7 @@ class UserWithProductShow(User):
     products: List["Product"] = []
     model_config = ConfigDict(from_attributes=True)
 
-class UserLogin(BaseModel):
+class Login(BaseModel):
     email: EmailStr
     password: str
     
