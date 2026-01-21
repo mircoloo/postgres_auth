@@ -1,26 +1,34 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional
+from pydantic import BaseModel, EmailStr, ConfigDict
+from typing import Optional, List
 from datetime import date
 
-class UserCreate(BaseModel):
+
+
+class Product(BaseModel):
+    product_name: str
+    expiration_date: Optional[date] = None
+    model_config = ConfigDict(from_attributes=True)
+class User(BaseModel):
     email: EmailStr
+    model_config = ConfigDict(from_attributes=True)
+class UserCreate(User):
     password: str
-    
-    class Config():
-        orm_mode = True
 
-class UserOut(BaseModel):
-    id: int
-    email: EmailStr
-
-    class Config:
-        orm_mode = True
+class UserWithProductShow(User):
+    products: List["Product"] = []
+    model_config = ConfigDict(from_attributes=True)
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
     
-    
-class Product(BaseModel):
+class ProductCreate(BaseModel):
     product_name: str
     expiration_date: Optional[date] = None
+        
+class ProductShow(BaseModel):
+    product_name: str 
+    expiration_date: Optional[date] = None
+    user: User 
+    model_config = ConfigDict(from_attributes=True)
+    

@@ -12,7 +12,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-    items: Mapped[List["Product"]] = relationship("Product", back_populates="owner")
+    products: Mapped[List["Product"]] = relationship("Product", back_populates="user")
 
 class Product(Base):
     __tablename__ = "products"
@@ -21,4 +21,4 @@ class Product(Base):
     product_name: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     expiration_date: Mapped[date] = mapped_column(Date)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    owner: Mapped["User"] = relationship("User", back_populates="items")
+    user: Mapped["User"] = relationship("User", back_populates="products")
